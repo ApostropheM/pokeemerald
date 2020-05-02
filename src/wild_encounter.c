@@ -496,6 +496,7 @@ static bool8 DoWildEncounterRateTest(u32 encounterRate, bool8 ignoreAbility)
         else if (ability == ABILITY_SAND_VEIL && gSaveBlock1Ptr->weather == WEATHER_SANDSTORM)
             encounterRate /= 2;
     }
+    encounterRate = encounterRate * gSaveBlock2Ptr->optionsWildRate / 100;
     if (encounterRate > 2880)
         encounterRate = 2880;
     return DoWildEncounterRateDiceRoll(encounterRate);

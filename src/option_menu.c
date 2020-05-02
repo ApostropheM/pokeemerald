@@ -11,6 +11,7 @@
 #include "window.h"
 #include "text.h"
 #include "text_window.h"
+#include "wild_encounter.h"
 #include "international_string_util.h"
 #include "strings.h"
 #include "gba/m4a_internal.h"
@@ -26,6 +27,7 @@ enum
     TD_SOUND,
     TD_BUTTONMODE,
     TD_FRAMETYPE,
+    TD_WILDRATE,
 };
 
 // Menu items
@@ -37,6 +39,7 @@ enum
     MENUITEM_SOUND,
     MENUITEM_BUTTONMODE,
     MENUITEM_FRAMETYPE,
+    MENUITEM_WILDRATE,
     MENUITEM_CANCEL,
     MENUITEM_COUNT,
 };
@@ -54,6 +57,7 @@ enum
 #define YPOS_SOUND        (MENUITEM_SOUND * 16)
 #define YPOS_BUTTONMODE   (MENUITEM_BUTTONMODE * 16)
 #define YPOS_FRAMETYPE    (MENUITEM_FRAMETYPE * 16)
+#define YPOS_WILDRATE     (MENUITEM_WILDRATE * 16)
 
 // this file's functions
 static void Task_OptionMenuFadeIn(u8 taskId);
@@ -72,6 +76,8 @@ static void Sound_DrawChoices(u8 selection);
 static u8   FrameType_ProcessInput(u8 selection);
 static void FrameType_DrawChoices(u8 selection);
 static u8   ButtonMode_ProcessInput(u8 selection);
+static void WildRate_DrawChoices(u16 selection);
+static u16  WildRate_ProcessInput(u16 selection);
 static void ButtonMode_DrawChoices(u8 selection);
 static void DrawTextOption(void);
 static void DrawOptionMenuTexts(void);
@@ -93,6 +99,7 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
     [MENUITEM_SOUND]       = gText_Sound,
     [MENUITEM_BUTTONMODE]  = gText_ButtonMode,
     [MENUITEM_FRAMETYPE]   = gText_Frame,
+    [MENUITEM_WILDRATE] = gText_WildRate,
     [MENUITEM_CANCEL]      = gText_OptionMenuCancel,
 };
 
@@ -244,6 +251,7 @@ void CB2_InitOptionMenu(void)
         gTasks[taskId].data[TD_SOUND] = gSaveBlock2Ptr->optionsSound;
         gTasks[taskId].data[TD_BUTTONMODE] = gSaveBlock2Ptr->optionsButtonMode;
         gTasks[taskId].data[TD_FRAMETYPE] = gSaveBlock2Ptr->optionsWindowFrameType;
+        gTasks[taskId].data[TD_WILDRATE] = gSaveBlock2Ptr->optionsWildRate;
 
         TextSpeed_DrawChoices(gTasks[taskId].data[TD_TEXTSPEED]);
         BattleScene_DrawChoices(gTasks[taskId].data[TD_BATTLESCENE]);
@@ -251,6 +259,7 @@ void CB2_InitOptionMenu(void)
         Sound_DrawChoices(gTasks[taskId].data[TD_SOUND]);
         ButtonMode_DrawChoices(gTasks[taskId].data[TD_BUTTONMODE]);
         FrameType_DrawChoices(gTasks[taskId].data[TD_FRAMETYPE]);
+        WildRate_DrawChoices(gTasks[taskId].data[TD_WILDRATE]);
         HighlightOptionMenuItem(gTasks[taskId].data[TD_MENUSELECTION]);
 
         CopyWindowToVram(WIN_OPTIONS, 3);
@@ -346,6 +355,13 @@ static void Task_OptionMenuProcessInput(u8 taskId)
             if (previousOption != gTasks[taskId].data[TD_FRAMETYPE])
                 FrameType_DrawChoices(gTasks[taskId].data[TD_FRAMETYPE]);
             break;
+        case MENUITEM_WILDRATE:
+            previousOption = gTasks[taskId].data[TD_WILDRATE];
+            gTasks[taskId].data[TD_WILDRATE] = WildRate_ProcessInput(gTasks[taskId].data[TD_WILDRATE]);
+
+            if (previousOption != gTasks[taskId].data[TD_WILDRATE])
+                WildRate_DrawChoices(gTasks[taskId].data[TD_WILDRATE]);
+            break;
         default:
             return;
         }
@@ -366,6 +382,7 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsSound = gTasks[taskId].data[TD_SOUND];
     gSaveBlock2Ptr->optionsButtonMode = gTasks[taskId].data[TD_BUTTONMODE];
     gSaveBlock2Ptr->optionsWindowFrameType = gTasks[taskId].data[TD_FRAMETYPE];
+    gSaveBlock2Ptr->optionsWildRate = gTasks[taskId].data[TD_WILDRATE];
 
     BeginNormalPaletteFade(0xFFFFFFFF, 0, 0, 0x10, RGB_BLACK);
     gTasks[taskId].func = Task_OptionMenuFadeOut;
@@ -623,6 +640,84 @@ static void ButtonMode_DrawChoices(u8 selection)
     DrawOptionMenuChoice(gText_ButtonTypeLR, xLR, YPOS_BUTTONMODE, styles[1]);
 
     DrawOptionMenuChoice(gText_ButtonTypeLEqualsA, GetStringRightAlignXOffset(1, gText_ButtonTypeLEqualsA, 198), YPOS_BUTTONMODE, styles[2]);
+}
+
+static u16 WildRate_ProcessInput(u16 selection)
+{
+    if (gMain.newKeys & DPAD_RIGHT)
+    {
+        if (selection < MAX_WILD_RATE)
+            selection += 25;
+        else
+            selection = 0;
+
+        sArrowPressed = TRUE;
+    }
+    if (gMain.newKeys & DPAD_LEFT)
+    {
+        if (selection != 0)
+            selection -= 25;
+        else
+            selection = MAX_WILD_RATE;
+
+        sArrowPressed = TRUE;
+    }
+    return selection;
+}
+
+static void WildRate_DrawChoices(u16 selection)
+{
+    u8 text[16];
+    u8 i;
+    u8 j;
+    u16 n = selection;
+    i = 0;
+
+    for (i = 0; gText_FrameTypeNumber[i] != EOS && i <= 5; i++)
+        text[i] = gText_FrameTypeNumber[i];
+    
+    // Convert a number to decimal string
+    if (n / 100 != 0)
+    {
+        u8 digit = n/100;
+        text[i] = digit + CHAR_0;
+        i++;
+        n %= 100;
+        text[i] = n / 10 + CHAR_0;
+        i++;
+        text[i] = n % 10 + CHAR_0;
+        i++;
+    }
+    else
+    {
+        if (n / 10 != 0)
+        {
+            text[i] = n / 10 + CHAR_0;
+            i++;
+            text[i] = n % 10 + CHAR_0;
+            i++;
+            text[i] = 0x77;
+            i++;
+        }
+        else
+        {
+            text[i] = n % 10 + CHAR_0;
+            i++;
+            text[i] = 0x77;
+            i++;
+            text[i] = 0x77;
+            i++;
+        }
+    }
+
+    text[i] = 0x77;
+    i++;
+    
+    text[i] = EOS;
+
+    DrawOptionMenuChoice(text, 104, YPOS_WILDRATE, 1);
+    DrawOptionMenuChoice(gText_WildPercent, 128, YPOS_WILDRATE, 0);
+
 }
 
 static void DrawTextOption(void)

@@ -6,6 +6,8 @@
 #define ROCK_WILD_COUNT     5
 #define FISH_WILD_COUNT     10
 
+#define MAX_WILD_RATE       500 //do not set this more than 3 digits
+
 struct WildPokemon
 {
     u8 minLevel;
