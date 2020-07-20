@@ -423,6 +423,8 @@ extern const u8 gText_CantStoreImportantItems[];
 extern const u8 gText_DepositedVar2Var1s[];
 extern const u8 gText_NoRoomForItems[];
 extern const u8 gText_ThreeDashes[];
+extern const u8 gText_ExpShareOn[];
+extern const u8 gText_ExpShareOff[];
 
 // party menu text
 extern const u8 gText_PkmnHPRestoredByVar2[];
