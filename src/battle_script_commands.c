@@ -3263,7 +3263,7 @@ static void Cmd_getexp(void)
                 else
                     holdEffect = ItemId_GetHoldEffect(item);
 
-                if (holdEffect == HOLD_EFFECT_EXP_SHARE || gSaveBlock2Ptr->expShare) // allows both Exp Share and Exp All to coexist
+                if (holdEffect == HOLD_EFFECT_EXP_SHARE)
                     viaExpShare++;
             }
 
@@ -3275,7 +3275,7 @@ static void Cmd_getexp(void)
                 if (*exp == 0)
                     *exp = 1;
 
-                gExpShareExp = calculatedExp / 2; 
+                gExpShareExp = calculatedExp / 2 / viaExpShare;
                 if (gExpShareExp == 0)
                     gExpShareExp = 1;
             }
@@ -3302,7 +3302,7 @@ static void Cmd_getexp(void)
             else
                 holdEffect = ItemId_GetHoldEffect(item);
 
-            if ((holdEffect != HOLD_EFFECT_EXP_SHARE && !gSaveBlock2Ptr->expShare) && !(gBattleStruct->sentInPokes & 1))
+            if (holdEffect != HOLD_EFFECT_EXP_SHARE && !(gBattleStruct->sentInPokes & 1))
             {
                 *(&gBattleStruct->sentInPokes) >>= 1;
                 gBattleScripting.getexpState = 5;
@@ -3331,7 +3331,7 @@ static void Cmd_getexp(void)
                     else
                         gBattleMoveDamage = 0;
 
-                    if (holdEffect == HOLD_EFFECT_EXP_SHARE || gSaveBlock2Ptr->expShare)
+                    if (holdEffect == HOLD_EFFECT_EXP_SHARE)
                         gBattleMoveDamage += gExpShareExp;
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
