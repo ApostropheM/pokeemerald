@@ -1607,6 +1607,16 @@
 	.2byte \quantity
 	.endm
 
+    .macro questmenu case:req, questId:req
+    .byte 0xe3
+    .byte \case
+    .byte \questId
+    .endm
+    
+    .macro openquestmenu
+    questmenu 0 0
+    .endm
+
 
 @ Supplementary
 
