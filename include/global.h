@@ -489,7 +489,7 @@ struct SaveBlock2
     /*0x64C*/ struct BattleFrontier frontier;
     /*0x0F2C*/ u8 unlockedQuests[SIDE_QUEST_FLAGS_COUNT];
     /*0x????*/ u8 completedQuests[SIDE_QUEST_FLAGS_COUNT];
-    /*0x????*/ u8 activeQuest;
+    // /*0x????*/ u8 activeQuest;
 }; 
 
 extern struct SaveBlock2 *gSaveBlock2Ptr;

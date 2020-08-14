@@ -42,12 +42,12 @@ void ResetItemMenuIconState(void);
 void DestroyItemMenuIcon(u8 idx);
 void Task_OpenQuestMenuFromStartMenu(u8);
 s8 GetSetQuestFlag(u8 quest, u8 caseId);
-s8 GetActiveQuestIndex(void);
-void SetActiveQuest(u8 questId);
+// s8 GetActiveQuestIndex(void);
+// void SetActiveQuest(u8 questId);
 void TextWindow_SetStdFrame0_WithPal(u8 windowId, u16 destOffset, u8 palIdx);
 void QuestMenu_Init(u8 a0, MainCallback callback);
 void SetQuestMenuActive(void);
-void ResetActiveQuest(void);
+// void ResetActiveQuest(void);
 void CopyQuestName(u8 *dst, u8 questId);
 
 #endif // GUARD_QUESTS_H

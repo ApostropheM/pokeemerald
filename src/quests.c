@@ -48,7 +48,7 @@
 #define tBldYBak        data[8]
 
 // Defines
-#define NO_ACTIVE_QUEST -1
+// #define NO_ACTIVE_QUEST -1
 
 struct QuestMenuResources
 {
@@ -104,8 +104,8 @@ static void Task_QuestMenuSubmenuInit(u8 taskId);
 static void Task_QuestMenuSubmenuRun(u8 taskId);
 static void Task_QuestMenuDetails(u8 taskId);
 static void Task_QuestMenuReward(u8 taskId);
-static void Task_QuestMenuBeginQuest(u8 taskId);
-static void Task_QuestMenuEndQuest(u8 taskId);
+// static void Task_QuestMenuBeginQuest(u8 taskId);
+// static void Task_QuestMenuEndQuest(u8 taskId);
 static void QuestMenu_DisplaySubMenuMessage(u8 taskId);
 static void Task_QuestMenuRefreshAfterAcknowledgement(u8 taskId);
 static void Task_QuestMenuCleanUp(u8 taskId);
@@ -117,7 +117,7 @@ static void QuestMenu_SetBorderStyleOnWindow(u8 windowId);
 static u8 QuestMenu_GetOrCreateSubwindow(u8 idx);
 static void QuestMenu_DestroySubwindow(u8 idx);
 static void QuestMenu_SetInitializedFlag(u8 a0);
-static bool8 IsActiveQuest(u8 questId);
+// static bool8 IsActiveQuest(u8 questId);
 
 // Data
 // graphics
@@ -134,19 +134,19 @@ static const u16 sFR_MessageBoxTiles[] = INCBIN_U16("graphics/text_window/fr_mes
 // strings
 static const u8 sText_Empty[] = _("");
 static const u8 sText_Quests[] = _("   Side\n Quests");
-static const u8 sText_QuestMenu_Begin[] = _("Begin");
-static const u8 sText_QuestMenu_End[] = _("End");
+// static const u8 sText_QuestMenu_Begin[] = _("Begin");
+// static const u8 sText_QuestMenu_End[] = _("End");
 static const u8 sText_QuestMenu_Details[] = _("Details");
 static const u8 sText_QuestMenu_Reward[] = _("Reward");
 static const u8 sText_QuestMenu_Unk[] = _("{COLOR}{LIGHT_GREY}?????????");
-static const u8 sText_QuestMenu_Active[] = _("{COLOR}{GREEN}Active");
+// static const u8 sText_QuestMenu_Active[] = _("{COLOR}{GREEN}Active");
 static const u8 sText_QuestMenu_Complete[] = _("{COLOR}{BLUE}Done");
 static const u8 sText_QuestMenu_Exit[] = _("Exit the Quest Menu");
 static const u8 sText_QuestMenu_SelectedQuest[] = _("Do what with\nthis quest?");
 static const u8 sText_QuestMenu_DisplayDetails[] = _("POC: {STR_VAR_1}\nMap: {STR_VAR_2}");
 static const u8 sText_QuestMenu_DisplayReward[] = _("Reward:\n{STR_VAR_1}");
-static const u8 sText_QuestMenu_BeginQuest[] = _("Initiating Quest:\n{STR_VAR_1}");
-static const u8 sText_QuestMenu_EndQuest[] = _("Cancelling Quest:\n{STR_VAR_1}");
+// static const u8 sText_QuestMenu_BeginQuest[] = _("Initiating Quest:\n{STR_VAR_1}");
+// static const u8 sText_QuestMenu_EndQuest[] = _("Cancelling Quest:\n{STR_VAR_1}");
 
 #define side_quest(n, d, p, m, r) {.name = n, .desc = d, .poc = p, .map = m, .reward = r}
 static const struct SideQuest sSideQuests[SIDE_QUEST_COUNT] =
@@ -228,18 +228,18 @@ static const u8 sSideQuestDifficulties[SIDE_QUEST_COUNT] =
 // Selected an incomplete quest
 static const struct MenuAction sQuestSubmenuOptions[] =
 {
-    {sText_QuestMenu_Begin,             {.void_u8 = Task_QuestMenuBeginQuest}},
+    // {sText_QuestMenu_Begin,             {.void_u8 = Task_QuestMenuBeginQuest}},
     {sText_QuestMenu_Details,           {.void_u8 = Task_QuestMenuDetails}},
     {gText_Cancel,                      {.void_u8 = Task_QuestMenuCancel}},
 };
 
 // Selected the active quest
-static const struct MenuAction sActiveQuestSubmenuOptions[] =
-{
-    {sText_QuestMenu_End,               {.void_u8 = Task_QuestMenuEndQuest}},
-    {sText_QuestMenu_Details,           {.void_u8 = Task_QuestMenuDetails}},
-    {gText_Cancel,                      {.void_u8 = Task_QuestMenuCancel}},
-};
+// static const struct MenuAction sActiveQuestSubmenuOptions[] =
+// {
+//     // {sText_QuestMenu_End,               {.void_u8 = Task_QuestMenuEndQuest}},
+//     {sText_QuestMenu_Details,           {.void_u8 = Task_QuestMenuDetails}},
+//     {gText_Cancel,                      {.void_u8 = Task_QuestMenuCancel}},
+// };
 
 // completed quest selection
 static const struct MenuAction sCompletedQuestSubmenuOptions[] =
@@ -849,8 +849,8 @@ static void QuestMenu_ItemPrintFunc(u8 windowId, s32 itemId, u8 y)
     {
         if (GetSetQuestFlag(itemId, FLAG_GET_COMPLETED))
             StringCopy(gStringVar4, sText_QuestMenu_Complete);
-        else if (IsActiveQuest(itemId))
-            StringCopy(gStringVar4, sText_QuestMenu_Active);
+        // else if (IsActiveQuest(itemId))
+            // StringCopy(gStringVar4, sText_QuestMenu_Active);
         else
             StringCopy(gStringVar4, sText_Empty);
         
@@ -1182,12 +1182,12 @@ static void Task_QuestMenuSubmenuInit(u8 taskId)
         sub_81983AC(4, 2, 0, 2, GetFontAttribute(2, FONTATTR_MAX_LETTER_HEIGHT) + 2, NELEMS(sCompletedQuestSubmenuOptions), 0);
 
     }
-    else if (IsActiveQuest(QuestMenu_GetCursorPosition()))
-    {
-        // active
-        PrintTextArray(4, 2, 8, 2, GetFontAttribute(2, FONTATTR_MAX_LETTER_HEIGHT) + 2, NELEMS(sActiveQuestSubmenuOptions), sActiveQuestSubmenuOptions);
-        sub_81983AC(4, 2, 0, 2, GetFontAttribute(2, FONTATTR_MAX_LETTER_HEIGHT) + 2, NELEMS(sActiveQuestSubmenuOptions), 0);
-    }
+    // else if (IsActiveQuest(QuestMenu_GetCursorPosition()))
+    // {
+    //     // active
+    //     PrintTextArray(4, 2, 8, 2, GetFontAttribute(2, FONTATTR_MAX_LETTER_HEIGHT) + 2, NELEMS(sActiveQuestSubmenuOptions), sActiveQuestSubmenuOptions);
+    //     sub_81983AC(4, 2, 0, 2, GetFontAttribute(2, FONTATTR_MAX_LETTER_HEIGHT) + 2, NELEMS(sActiveQuestSubmenuOptions), 0);
+    // }
     else
     {
         // unlocked
@@ -1222,8 +1222,8 @@ static void Task_QuestMenuSubmenuRun(u8 taskId)
         PlaySE(SE_SELECT);
         if (GetSetQuestFlag(questIndex, FLAG_GET_COMPLETED))
             sCompletedQuestSubmenuOptions[input].func.void_u8(taskId);
-        else if (IsActiveQuest(questIndex))
-            sActiveQuestSubmenuOptions[input].func.void_u8(taskId);
+        // else if (IsActiveQuest(questIndex))
+            // sActiveQuestSubmenuOptions[input].func.void_u8(taskId);
         else       
             sQuestSubmenuOptions[input].func.void_u8(taskId);
     }
@@ -1262,27 +1262,27 @@ static void Task_QuestMenuReward(u8 taskId)
     QuestMenu_DisplaySubMenuMessage(taskId);
 }
 
-static void Task_QuestMenuEndQuest(u8 taskId)
-{
-    u8 questIndex = QuestMenu_GetCursorPosition();
+// static void Task_QuestMenuEndQuest(u8 taskId)
+// {
+//     u8 questIndex = QuestMenu_GetCursorPosition();
     
-    ResetActiveQuest();
-    QuestMenuSubmenuSelectionMessage(taskId);
-    StringCopy(gStringVar1, sSideQuests[questIndex].name);
-    StringExpandPlaceholders(gStringVar4, sText_QuestMenu_EndQuest);
-    QuestMenu_DisplaySubMenuMessage(taskId);
-}
+//     ResetActiveQuest();
+//     QuestMenuSubmenuSelectionMessage(taskId);
+//     StringCopy(gStringVar1, sSideQuests[questIndex].name);
+//     StringExpandPlaceholders(gStringVar4, sText_QuestMenu_EndQuest);
+//     QuestMenu_DisplaySubMenuMessage(taskId);
+// }
 
-static void Task_QuestMenuBeginQuest(u8 taskId)
-{
-    u8 questIndex = QuestMenu_GetCursorPosition();
+// static void Task_QuestMenuBeginQuest(u8 taskId)
+// {
+//     u8 questIndex = QuestMenu_GetCursorPosition();
     
-    SetActiveQuest(questIndex);
-    QuestMenuSubmenuSelectionMessage(taskId);
-    StringCopy(gStringVar1, sSideQuests[questIndex].name);
-    StringExpandPlaceholders(gStringVar4, sText_QuestMenu_BeginQuest);
-    QuestMenu_DisplaySubMenuMessage(taskId);
-}
+//     SetActiveQuest(questIndex);
+//     QuestMenuSubmenuSelectionMessage(taskId);
+//     StringCopy(gStringVar1, sSideQuests[questIndex].name);
+//     StringExpandPlaceholders(gStringVar4, sText_QuestMenu_BeginQuest);
+//     QuestMenu_DisplaySubMenuMessage(taskId);
+// }
 
 static void QuestMenu_DisplaySubMenuMessage(u8 taskId)
 {
@@ -1440,31 +1440,31 @@ s8 GetSetQuestFlag(u8 quest, u8 caseId)
     return -1;  //failure
 }
 
-s8 GetActiveQuestIndex(void)
-{
-    if (gSaveBlock2Ptr->activeQuest > 0)
-        return (gSaveBlock2Ptr->activeQuest - 1);
-    else
-        return NO_ACTIVE_QUEST;
-}
+// s8 GetActiveQuestIndex(void)
+// {
+//     if (gSaveBlock2Ptr->activeQuest > 0)
+//         return (gSaveBlock2Ptr->activeQuest - 1);
+//     else
+//         return NO_ACTIVE_QUEST;
+// }
 
-static bool8 IsActiveQuest(u8 questId)
-{
-    if ((u8)GetActiveQuestIndex() == questId)
-        return TRUE;
+// static bool8 IsActiveQuest(u8 questId)
+// {
+//     if ((u8)GetActiveQuestIndex() == questId)
+//         return TRUE;
     
-    return FALSE;
-}
+//     return FALSE;
+// }
 
-void SetActiveQuest(u8 questId)
-{
-    gSaveBlock2Ptr->activeQuest = questId + 1;  // 1-indexed
-}
+// void SetActiveQuest(u8 questId)
+// {
+//     gSaveBlock2Ptr->activeQuest = questId + 1;  // 1-indexed
+// }
 
-void ResetActiveQuest(void)
-{
-    gSaveBlock2Ptr->activeQuest = 0;
-}
+// void ResetActiveQuest(void)
+// {
+//     gSaveBlock2Ptr->activeQuest = 0;
+// }
 
 /*
 static void DebugQuestMenu(void)
