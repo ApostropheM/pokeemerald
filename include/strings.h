@@ -3114,36 +3114,5 @@ extern const u8 gText_SideQuestMap_27[];
 extern const u8 gText_SideQuestMap_28[];
 extern const u8 gText_SideQuestMap_29[];
 extern const u8 gText_SideQuestMap_30[];
-//rewards
-extern const u8 gText_SideQuestReward_1[];
-extern const u8 gText_SideQuestReward_2[];
-extern const u8 gText_SideQuestReward_3[];
-extern const u8 gText_SideQuestReward_4[];
-extern const u8 gText_SideQuestReward_5[];
-extern const u8 gText_SideQuestReward_6[];
-extern const u8 gText_SideQuestReward_7[];
-extern const u8 gText_SideQuestReward_8[];
-extern const u8 gText_SideQuestReward_9[];
-extern const u8 gText_SideQuestReward_10[];
-extern const u8 gText_SideQuestReward_11[];
-extern const u8 gText_SideQuestReward_12[];
-extern const u8 gText_SideQuestReward_13[];
-extern const u8 gText_SideQuestReward_14[];
-extern const u8 gText_SideQuestReward_15[];
-extern const u8 gText_SideQuestReward_16[];
-extern const u8 gText_SideQuestReward_17[];
-extern const u8 gText_SideQuestReward_18[];
-extern const u8 gText_SideQuestReward_19[];
-extern const u8 gText_SideQuestReward_20[];
-extern const u8 gText_SideQuestReward_21[];
-extern const u8 gText_SideQuestReward_22[];
-extern const u8 gText_SideQuestReward_23[];
-extern const u8 gText_SideQuestReward_24[];
-extern const u8 gText_SideQuestReward_25[];
-extern const u8 gText_SideQuestReward_26[];
-extern const u8 gText_SideQuestReward_27[];
-extern const u8 gText_SideQuestReward_28[];
-extern const u8 gText_SideQuestReward_29[];
-extern const u8 gText_SideQuestReward_30[];
 
 #endif // GUARD_STRINGS_H
