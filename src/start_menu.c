@@ -29,6 +29,7 @@
 #include "party_menu.h"
 #include "pokedex.h"
 #include "pokenav.h"
+#include "quests.h"
 #include "safari_zone.h"
 #include "save.h"
 #include "scanline_effect.h"
@@ -53,6 +54,7 @@ enum
     MENU_ACTION_POKEMON,
     MENU_ACTION_BAG,
     MENU_ACTION_POKENAV,
+    MENU_ACTION_QUESTS,
     MENU_ACTION_PLAYER,
     MENU_ACTION_SAVE,
     MENU_ACTION_OPTION,
@@ -61,7 +63,7 @@ enum
     MENU_ACTION_PLAYER_LINK,
     MENU_ACTION_REST_FRONTIER,
     MENU_ACTION_RETIRE_FRONTIER,
-    MENU_ACTION_PYRAMID_BAG
+    MENU_ACTION_PYRAMID_BAG,
 };
 
 // Save status
@@ -94,6 +96,7 @@ static bool8 StartMenuPokedexCallback(void);
 static bool8 StartMenuPokemonCallback(void);
 static bool8 StartMenuBagCallback(void);
 static bool8 StartMenuPokeNavCallback(void);
+static bool8 StartMenuQuestsCallback(void);
 static bool8 StartMenuPlayerNameCallback(void);
 static bool8 StartMenuSaveCallback(void);
 static bool8 StartMenuOptionCallback(void);
@@ -159,6 +162,7 @@ static const struct MenuAction sStartMenuItems[] =
     {gText_MenuPokemon, {.u8_void = StartMenuPokemonCallback}},
     {gText_MenuBag, {.u8_void = StartMenuBagCallback}},
     {gText_MenuPokenav, {.u8_void = StartMenuPokeNavCallback}},
+    {gText_MenuQuests, {.u8_void = StartMenuQuestsCallback}},
     {gText_MenuPlayer, {.u8_void = StartMenuPlayerNameCallback}},
     {gText_MenuSave, {.u8_void = StartMenuSaveCallback}},
     {gText_MenuOption, {.u8_void = StartMenuOptionCallback}},
@@ -288,6 +292,7 @@ static void BuildNormalStartMenu(void)
         AddStartMenuAction(MENU_ACTION_POKENAV);
     }
 
+    AddStartMenuAction(MENU_ACTION_QUESTS);
     AddStartMenuAction(MENU_ACTION_PLAYER);
     AddStartMenuAction(MENU_ACTION_SAVE);
     AddStartMenuAction(MENU_ACTION_OPTION);
@@ -648,6 +653,21 @@ static bool8 StartMenuPokeNavCallback(void)
         RemoveExtraStartMenuWindows();
         CleanupOverworldWindowsAndTilemaps();
         SetMainCallback2(CB2_InitPokeNav);  // Display PokeNav
+
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+static bool8 StartMenuQuestsCallback(void)
+{
+    if (!gPaletteFade.active)
+    {
+        PlayRainStoppingSoundEffect();
+        RemoveExtraStartMenuWindows();
+        CleanupOverworldWindowsAndTilemaps();
+        QuestMenu_Init(0, CB2_ReturnToFieldWithOpenMenu);
 
         return TRUE;
     }

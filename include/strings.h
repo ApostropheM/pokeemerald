@@ -250,6 +250,7 @@ extern const u8 gText_MenuPokedex[];
 extern const u8 gText_MenuPokemon[];
 extern const u8 gText_MenuBag[];
 extern const u8 gText_MenuPokenav[];
+extern const u8 gText_MenuQuests[];
 extern const u8 gText_MenuPlayer[];
 extern const u8 gText_MenuSave[];
 extern const u8 gText_MenuOption[];
