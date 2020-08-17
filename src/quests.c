@@ -1391,7 +1391,7 @@ s8 GetSetQuestFlag(u8 quest, u8 caseId)
     case FLAG_GET_UNLOCKED:
         return gSaveBlock2Ptr->questStates[quest];
     case FLAG_SET_UNLOCKED:
-        gSaveBlock2Ptr->questStates[quest]++;
+        gSaveBlock2Ptr->questStates[quest] = 1;
         return 1;
     case FLAG_GET_COMPLETED:
         return gSaveBlock2Ptr->questStates[quest] > sSideQuests[quest].states;
