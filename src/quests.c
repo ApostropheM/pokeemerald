@@ -78,6 +78,7 @@ EWRAM_DATA static struct ListMenuItem *sListMenuItems = NULL;
 EWRAM_DATA static struct QuestMenuStaticResources sListMenuState = {0};
 EWRAM_DATA static u8 sSubmenuWindowIds[3] = {0};
 EWRAM_DATA static u8 gUnknown_2039878[12] = {0};        // from pokefirered src/item_menu_icons.c
+EWRAM_DATA static u8 currentState = 0;
 
 // This File's Functions
 static void DebugQuestMenu(void);
@@ -737,12 +738,12 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
         {
             if (GetSetQuestFlag(itemIndex, FLAG_GET_UNLOCKED))
             {
-                u8 state = gSaveBlock2Ptr->questStates[itemIndex];
+                currentState = gSaveBlock2Ptr->questStates[itemIndex];
                 itemId = sSideQuestDifficultyItemIds[sSideQuestDifficulties[itemIndex]];
                 if (GetSetQuestFlag(itemIndex, FLAG_GET_COMPLETED))
                     desc = sSideQuests[itemIndex].desc[sSideQuests[itemIndex].states - 1].completed;
                 else
-                    desc = sSideQuests[itemIndex].desc[state - 1].inProgress;
+                    desc = sSideQuests[itemIndex].desc[currentState - 1].inProgress;
             }
             else
             {
@@ -1027,6 +1028,46 @@ static void Task_QuestMenuMain(u8 taskId)
             }
         }
         */
+        if (gMain.newKeys & DPAD_LEFT)
+        {
+            if (currentState <= 1)
+            {
+                PlaySE(SE_HAZURE);
+                return;
+            }
+
+            ListMenuGetScrollAndRow(data[0], &scroll, &row);
+            if (currentState == sSideQuests[scroll + row].states + 1)
+                currentState--;
+            currentState--;
+            FillWindowPixelBuffer(1, 0);
+            QuestMenu_AddTextPrinterParameterized(1, 2, sSideQuests[scroll + row].desc[currentState - 1].completed, 0, 3, 2, 0, 0, 3);
+            PlaySE(SE_SELECT);
+            return;
+        }
+
+        if (gMain.newKeys & DPAD_RIGHT)
+        {
+            u8 questIndex;
+            const u8 *desc;
+            ListMenuGetScrollAndRow(data[0], &scroll, &row);
+            questIndex = scroll + row;
+            if (currentState >= gSaveBlock2Ptr->questStates[questIndex] || currentState >= sSideQuests[questIndex].states)
+            {
+                PlaySE(SE_HAZURE);
+                return;
+            }
+            currentState++;
+            if (currentState == gSaveBlock2Ptr->questStates[questIndex])
+                desc = sSideQuests[questIndex].desc[currentState - 1].inProgress;
+            else
+                desc = sSideQuests[questIndex].desc[currentState - 1].completed;
+            FillWindowPixelBuffer(1, 0);
+            QuestMenu_AddTextPrinterParameterized(1, 2, desc, 0, 3, 2, 0, 0, 3);
+            PlaySE(SE_SELECT);
+            return;
+        }
+
         input = ListMenu_ProcessInput(data[0]);
         ListMenuGetScrollAndRow(data[0], &sListMenuState.scroll, &sListMenuState.row);
         switch (input)
