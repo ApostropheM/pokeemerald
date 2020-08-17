@@ -6,13 +6,19 @@
 //#define FLAG_QUEST_MENU_ACTIVE    0x264 //added to constants/flags.h
 
 #define NO_ACTIVE_QUEST             -1
+struct SideQuestDescStrings
+{
+	const u8* inProgress;
+	const u8* completed;
+};
 
 struct SideQuest 
 {
 	/*0x00*/ const u8* name;
-	/*0x04*/ const u8* desc;
+	/*0x04*/ const struct SideQuestDescStrings* desc;
 	/*0x08*/ const u8* poc;
 	/*0x0C*/ const u8* map;
+	/*0x10*/ const u8 states;
 	///*0x10*/ const u8* hint;
 	// /*0x14*/ const u8* reward;
 }; /* size = 0x18 */

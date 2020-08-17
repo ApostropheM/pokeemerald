@@ -487,8 +487,8 @@ struct SaveBlock2
     /*0x57C*/ struct RankingHall2P hallRecords2P[2][3]; // From record mixing.
     /*0x624*/ u16 contestLinkResults[CONTEST_CATEGORIES_COUNT][CONTESTANT_COUNT];
     /*0x64C*/ struct BattleFrontier frontier;
-    /*0x0F2C*/ u8 unlockedQuests[SIDE_QUEST_FLAGS_COUNT];
-    /*0x????*/ u8 completedQuests[SIDE_QUEST_FLAGS_COUNT];
+    /*0x0F2C*/ u8 questStates[SIDE_QUEST_COUNT];
+    // /*0x????*/ u8 completedQuests[SIDE_QUEST_FLAGS_COUNT];
     // /*0x????*/ u8 activeQuest;
 }; 
 
