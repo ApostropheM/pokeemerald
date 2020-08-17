@@ -140,7 +140,7 @@ static const u8 sText_Quests[] = _("   Side\n Quests");
 // static const u8 sText_QuestMenu_End[] = _("End");
 static const u8 sText_QuestMenu_Details[] = _("Details");
 // static const u8 sText_QuestMenu_Reward[] = _("Reward");
-static const u8 sText_QuestMenu_Unk[] = _("{COLOR}{LIGHT_GREY}?????????");
+// static const u8 sText_QuestMenu_Unk[] = _("{COLOR}{LIGHT_GREY}?????????");
 // static const u8 sText_QuestMenu_Active[] = _("{COLOR}{GREEN}Active");
 static const u8 sText_QuestMenu_Complete[] = _("{COLOR}{BLUE}Done");
 static const u8 sText_QuestMenu_Exit[] = _("Exit the Quest Menu");
@@ -652,18 +652,21 @@ static bool8 QuestMenu_AllocateResourcesForListMenu(void)
 static void QuestMenu_BuildListMenuTemplate(void)
 {
     u16 i;
-
+    u16 index = 0;
     for (i = 0; i < sStateDataPtr->nItems; i++)
     {
         if (GetSetQuestFlag(i, FLAG_GET_UNLOCKED))
-            sListMenuItems[i].name = sSideQuests[i].name;
-        else
-            sListMenuItems[i].name = sText_QuestMenu_Unk;
-        
-        sListMenuItems[i].id = i;
+        {
+            sListMenuItems[index].name = sSideQuests[i].name;
+            sListMenuItems[index].id = i;
+            index++;
+        }
     }
-    sListMenuItems[i].name = gText_Cancel;
-    sListMenuItems[i].id = LIST_CANCEL;
+    sListMenuItems[index].name = gText_Cancel;
+    sListMenuItems[index].id = LIST_CANCEL;
+
+    sStateDataPtr->nItems = index;
+    sStateDataPtr->maxShowed = sStateDataPtr->nItems + 1 <= 6 ? sStateDataPtr->nItems + 1 : 6;
 
     gMultiuseListMenuTemplate.items = sListMenuItems;
     gMultiuseListMenuTemplate.totalItems = sStateDataPtr->nItems + 1;
@@ -745,11 +748,11 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
                 else
                     desc = sSideQuests[itemIndex].desc[currentState - 1].inProgress;
             }
-            else
-            {
-                itemId = ITEM_NONE;
-                desc = sText_QuestMenu_Unk;
-            }
+            // else
+            // {
+            //     itemId = ITEM_NONE;
+            //     desc = sText_QuestMenu_Unk;
+            // }
             
             CreateItemMenuIcon(itemId, sStateDataPtr->itemMenuIconSlot);
         }
@@ -1028,7 +1031,10 @@ static void Task_QuestMenuMain(u8 taskId)
             }
         }
         */
-        if (gMain.newKeys & DPAD_LEFT)
+        u16 questId;
+        ListMenuGetScrollAndRow(data[0], &scroll, &row);
+        questId = sListMenuItems[scroll + row].id;
+        if (gMain.newKeys & DPAD_LEFT && sListMenuItems[scroll + row].id != LIST_CANCEL)
         {
             if (currentState <= 1)
             {
@@ -1036,32 +1042,28 @@ static void Task_QuestMenuMain(u8 taskId)
                 return;
             }
 
-            ListMenuGetScrollAndRow(data[0], &scroll, &row);
-            if (currentState == sSideQuests[scroll + row].states + 1)
+            if (currentState == sSideQuests[questId].states + 1)
                 currentState--;
             currentState--;
             FillWindowPixelBuffer(1, 0);
-            QuestMenu_AddTextPrinterParameterized(1, 2, sSideQuests[scroll + row].desc[currentState - 1].completed, 0, 3, 2, 0, 0, 3);
+            QuestMenu_AddTextPrinterParameterized(1, 2, sSideQuests[questId].desc[currentState - 1].completed, 0, 3, 2, 0, 0, 3);
             PlaySE(SE_SELECT);
             return;
         }
 
-        if (gMain.newKeys & DPAD_RIGHT)
+        if (gMain.newKeys & DPAD_RIGHT && sListMenuItems[scroll + row].id != LIST_CANCEL)
         {
-            u8 questIndex;
             const u8 *desc;
-            ListMenuGetScrollAndRow(data[0], &scroll, &row);
-            questIndex = scroll + row;
-            if (currentState >= gSaveBlock2Ptr->questStates[questIndex] || currentState >= sSideQuests[questIndex].states)
+            if (currentState >= gSaveBlock2Ptr->questStates[questId] || currentState >= sSideQuests[questId].states)
             {
                 PlaySE(SE_HAZURE);
                 return;
             }
             currentState++;
-            if (currentState == gSaveBlock2Ptr->questStates[questIndex])
-                desc = sSideQuests[questIndex].desc[currentState - 1].inProgress;
+            if (currentState == gSaveBlock2Ptr->questStates[questId])
+                desc = sSideQuests[questId].desc[currentState - 1].inProgress;
             else
-                desc = sSideQuests[questIndex].desc[currentState - 1].completed;
+                desc = sSideQuests[questId].desc[currentState - 1].completed;
             FillWindowPixelBuffer(1, 0);
             QuestMenu_AddTextPrinterParameterized(1, 2, desc, 0, 3, 2, 0, 0, 3);
             PlaySE(SE_SELECT);
