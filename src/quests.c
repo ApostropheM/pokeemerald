@@ -655,7 +655,7 @@ static void QuestMenu_BuildListMenuTemplate(void)
     u16 index = 0;
     for (i = 0; i < sStateDataPtr->nItems; i++)
     {
-        if (GetSetQuestFlag(i, FLAG_GET_UNLOCKED))
+        if (GetSetQuestFlag(i, VAR_GET_UNLOCKED))
         {
             sListMenuItems[index].name = sSideQuests[i].name;
             sListMenuItems[index].id = i;
@@ -739,11 +739,11 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
         DestroyItemMenuIcon(sStateDataPtr->itemMenuIconSlot ^ 1);
         if (itemIndex != LIST_CANCEL)
         {
-            if (GetSetQuestFlag(itemIndex, FLAG_GET_UNLOCKED))
+            if (GetSetQuestFlag(itemIndex, VAR_GET_UNLOCKED))
             {
                 currentState = gSaveBlock2Ptr->questStates[itemIndex];
                 itemId = sSideQuestDifficultyItemIds[sSideQuestDifficulties[itemIndex]];
-                if (GetSetQuestFlag(itemIndex, FLAG_GET_COMPLETED))
+                if (GetSetQuestFlag(itemIndex, VAR_GET_COMPLETED))
                     desc = sSideQuests[itemIndex].desc[sSideQuests[itemIndex].states - 1].completed;
                 else
                     desc = sSideQuests[itemIndex].desc[currentState - 1].inProgress;
@@ -779,7 +779,7 @@ static void QuestMenu_ItemPrintFunc(u8 windowId, s32 itemId, u8 y)
     }
     if (itemId != LIST_CANCEL)
     {
-        if (GetSetQuestFlag(itemId, FLAG_GET_COMPLETED))
+        if (GetSetQuestFlag(itemId, VAR_GET_COMPLETED))
             StringCopy(gStringVar4, sText_QuestMenu_Complete);
         // else if (IsActiveQuest(itemId))
             // StringCopy(gStringVar4, sText_QuestMenu_Active);
@@ -1084,7 +1084,7 @@ static void Task_QuestMenuMain(u8 taskId)
             break;
             
         default:
-            if (GetSetQuestFlag(input, FLAG_GET_UNLOCKED))
+            if (GetSetQuestFlag(input, VAR_GET_UNLOCKED))
             {
                 PlaySE(SE_SELECT);
                 QuestMenu_SetMessageWindowPalette(1);
@@ -1146,7 +1146,7 @@ static void Task_QuestMenuSubmenuInit(u8 taskId)
     QuestMenu_SetBorderStyleOnWindow(4);    //for sub menu list items
     windowId = QuestMenu_GetOrCreateSubwindow(0);
     
-    if (GetSetQuestFlag(data[1], FLAG_GET_COMPLETED))
+    if (GetSetQuestFlag(data[1], VAR_GET_COMPLETED))
     {
         // completed
         PrintTextArray(4, 2, 8, 2, GetFontAttribute(2, FONTATTR_MAX_LETTER_HEIGHT) + 2, NELEMS(sCompletedQuestSubmenuOptions), sCompletedQuestSubmenuOptions);
@@ -1191,7 +1191,7 @@ static void Task_QuestMenuSubmenuRun(u8 taskId)
         break;
     default:
         PlaySE(SE_SELECT);
-        if (GetSetQuestFlag(questIndex, FLAG_GET_COMPLETED))
+        if (GetSetQuestFlag(questIndex, VAR_GET_COMPLETED))
             sCompletedQuestSubmenuOptions[input].func.void_u8(taskId);
         // else if (IsActiveQuest(questIndex))
             // sActiveQuestSubmenuOptions[input].func.void_u8(taskId);
@@ -1388,14 +1388,14 @@ s8 GetSetQuestFlag(u8 quest, u8 caseId)
 {
     switch (caseId)
     {
-    case FLAG_GET_UNLOCKED:
+    case VAR_GET_UNLOCKED:
         return gSaveBlock2Ptr->questStates[quest];
-    case FLAG_SET_UNLOCKED:
+    case VAR_SET_UNLOCKED:
         gSaveBlock2Ptr->questStates[quest] = 1;
         return 1;
-    case FLAG_GET_COMPLETED:
+    case VAR_GET_COMPLETED:
         return gSaveBlock2Ptr->questStates[quest] > sSideQuests[quest].states;
-    case FLAG_SET_COMPLETED:
+    case VAR_SET_COMPLETED:
         gSaveBlock2Ptr->questStates[quest] = sSideQuests[quest].states + 1;
         return 1;
     }
@@ -1432,11 +1432,11 @@ s8 GetSetQuestFlag(u8 quest, u8 caseId)
 /*
 static void DebugQuestMenu(void)
 {
-    GetSetQuestFlag(SIDE_QUEST_1, FLAG_SET_UNLOCKED);
-    GetSetQuestFlag(SIDE_QUEST_2, FLAG_SET_UNLOCKED);
-    GetSetQuestFlag(SIDE_QUEST_3, FLAG_SET_UNLOCKED);
-    GetSetQuestFlag(SIDE_QUEST_5, FLAG_SET_UNLOCKED);
-    GetSetQuestFlag(SIDE_QUEST_5, FLAG_SET_COMPLETED);    
+    GetSetQuestFlag(SIDE_QUEST_1, VAR_SET_UNLOCKED);
+    GetSetQuestFlag(SIDE_QUEST_2, VAR_SET_UNLOCKED);
+    GetSetQuestFlag(SIDE_QUEST_3, VAR_SET_UNLOCKED);
+    GetSetQuestFlag(SIDE_QUEST_5, VAR_SET_UNLOCKED);
+    GetSetQuestFlag(SIDE_QUEST_5, VAR_SET_COMPLETED);    
     SetActiveQuest(SIDE_QUEST_2);
 }
 */

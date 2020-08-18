@@ -2319,10 +2319,10 @@ bool8 ScrCmd_questmenu(struct ScriptContext *ctx)
         ScriptContext1_Stop();
         break;
     case QUEST_MENU_UNLOCK_QUEST:
-        GetSetQuestFlag(questId, FLAG_SET_UNLOCKED);
+        GetSetQuestFlag(questId, VAR_SET_UNLOCKED);
         break;
     case QUEST_MENU_COMPLETE_QUEST:
-        GetSetQuestFlag(questId, FLAG_SET_COMPLETED);
+        GetSetQuestFlag(questId, VAR_SET_COMPLETED);
         break;
     case QUEST_MENU_GET_STATE:
         gSpecialVar_Result = gSaveBlock2Ptr->questStates[questId];
@@ -2337,13 +2337,13 @@ bool8 ScrCmd_questmenu(struct ScriptContext *ctx)
     //     gSpecialVar_Result = GetActiveQuestIndex();
     //     break;
     case QUEST_MENU_CHECK_UNLOCKED:
-        if (GetSetQuestFlag(questId, FLAG_GET_UNLOCKED))
+        if (GetSetQuestFlag(questId, VAR_GET_UNLOCKED))
             gSpecialVar_Result = TRUE;
         else
             gSpecialVar_Result = FALSE;
         break;
     case QUEST_MENU_CHECK_COMPLETE:
-        if (GetSetQuestFlag(questId, FLAG_GET_COMPLETED))
+        if (GetSetQuestFlag(questId, VAR_GET_COMPLETED))
             gSpecialVar_Result = TRUE;
         else
             gSpecialVar_Result = FALSE;

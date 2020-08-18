@@ -3,7 +3,7 @@
 
 //#include constants/quests.h       //included in global.h
 
-//#define FLAG_QUEST_MENU_ACTIVE    0x264 //added to constants/flags.h
+//#define VAR_QUEST_MENU_ACTIVE    0x264 //added to constants/flags.h
 
 #define NO_ACTIVE_QUEST             -1
 struct SideQuestDescStrings
@@ -36,10 +36,10 @@ enum
 
 enum QuestCases
 {
-    FLAG_GET_UNLOCKED,      // check if quest is unlocked
-    FLAG_SET_UNLOCKED,      // mark unlocked quest
-    FLAG_GET_COMPLETED,     // check if quest is completed
-    FLAG_SET_COMPLETED,     // mark completed quest
+    VAR_GET_UNLOCKED,      // check if quest is unlocked
+    VAR_SET_UNLOCKED,      // mark unlocked quest
+    VAR_GET_COMPLETED,     // check if quest is completed
+    VAR_SET_COMPLETED,     // mark completed quest
 };
 
 // functions
