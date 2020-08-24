@@ -1043,8 +1043,8 @@ static void Task_QuestMenuMain(u8 taskId)
                 return;
             }
 
-            if (currentState == sSideQuests[questId].states + 1)
-                currentState--;
+            if (currentState >= sSideQuests[questId].states + 1)
+                currentState = sSideQuests[questId].states;
             currentState--;
             FillWindowPixelBuffer(1, 0);
             QuestMenu_AddTextPrinterParameterized(1, 2, sSideQuests[questId].desc[currentState - 1].completed, 0, 3, 2, 0, 0, 3);
