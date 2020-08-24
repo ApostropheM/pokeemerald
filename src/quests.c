@@ -2,7 +2,7 @@
 #include "strings.h"
 #include "bg.h"
 #include "data.h"
-#include "decompress.h"
+#include "decompress.h" 
 #include "gpu_regs.h"
 #include "graphics.h"
 #include "item.h"
@@ -21,6 +21,7 @@
 #include "sound.h"
 #include "string_util.h"
 #include "strings.h"
+#include "sprite.h"
 #include "task.h"
 #include "text_window.h"
 #include "quests.h"
@@ -77,7 +78,7 @@ EWRAM_DATA static u8 *sBg1TilemapBuffer = NULL;
 EWRAM_DATA static struct ListMenuItem *sListMenuItems = NULL;
 EWRAM_DATA static struct QuestMenuStaticResources sListMenuState = {0};
 EWRAM_DATA static u8 sSubmenuWindowIds[3] = {0};
-EWRAM_DATA static u8 gUnknown_2039878[12] = {0};        // from pokefirered src/item_menu_icons.c
+EWRAM_DATA static u8 sItemMenuIconSpriteIds[12] = {0};        // from pokefirered src/item_menu_icons.c
 EWRAM_DATA static u8 currentState = 0;
 
 // This File's Functions
@@ -513,7 +514,7 @@ static bool8 QuestMenu_DoGfxSetup(void)
         gMain.state++;
         break;
     case 14:
-        //sub_80985E4();
+        //ItemMenuIcons_CreateInsertIndicatorBarHidden();
         gMain.state++;
         break;
     case 15:
@@ -550,7 +551,7 @@ static bool8 QuestMenu_DoGfxSetup(void)
         gMain.state++;
         break;
     case 20:
-        //if ((u8)sub_80BF72C() != TRUE)
+        //if ((u8)LoadBagMenuGraphics() != TRUE)
             //gMain.state++;
         gMain.state++;
         break;
@@ -690,7 +691,7 @@ static void QuestMenu_BuildListMenuTemplate(void)
 
 void CreateItemMenuIcon(u16 itemId, u8 idx)
 {
-    u8 * ptr = &gUnknown_2039878[10];
+    u8 * ptr = &sItemMenuIconSpriteIds[10];
     u8 spriteId;
 
     if (ptr[idx] == 0xFF)
@@ -711,13 +712,13 @@ void ResetItemMenuIconState(void)
 {
     u16 i;
 
-    for (i = 0; i < NELEMS(gUnknown_2039878); i++)
-        gUnknown_2039878[i] = 0xFF;
+    for (i = 0; i < NELEMS(sItemMenuIconSpriteIds); i++)
+        sItemMenuIconSpriteIds[i] = 0xFF;
 }
 
 void DestroyItemMenuIcon(u8 idx)
 {
-    u8 * ptr = &gUnknown_2039878[10];
+    u8 * ptr = &sItemMenuIconSpriteIds[10];
 
     if (ptr[idx] != 0xFF)
     {
@@ -1110,33 +1111,6 @@ static void QuestMenu_ReturnFromSubmenu(u8 taskId)
     QuestMenu_PlaceTopMenuScrollIndicatorArrows();
     gTasks[taskId].func = Task_QuestMenuMain;
 }
-
-// pokefirered item_menu_icon
-static void sub_8098660(u8 flag)
-{
-    u8 i;
-    u8 * ptr = &gUnknown_2039878[1];
-
-    for (i = 0; i < 9; i++)
-    {
-        gSprites[ptr[i]].invisible = flag;
-    }
-}
-
-// pokefirered item_menu_icon
-static void sub_80986A8(s16 x, u16 y)
-{
-    u8 i;
-    u8 * ptr = &gUnknown_2039878[1];
-
-    for (i = 0; i < 9; i++)
-    {
-        gSprites[ptr[i]].pos2.x = x;
-        gSprites[ptr[i]].pos1.y = y + 7;
-    }
-}
-
-
 
 static void Task_QuestMenuSubmenuInit(u8 taskId)
 {
