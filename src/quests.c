@@ -749,7 +749,7 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
             if (GetSetQuestFlag(itemIndex, VAR_GET_UNLOCKED))
             {
                 currentState = gSaveBlock2Ptr->questStates[itemIndex];
-                itemId = sSideQuestDifficultyItemIds[sSideQuestDifficulties[itemIndex]];
+                // itemId = sSideQuestDifficultyItemIds[sSideQuestDifficulties[itemIndex]];
                 if (GetSetQuestFlag(itemIndex, VAR_GET_COMPLETED))
                     desc = sSideQuests[itemIndex].desc[sSideQuests[itemIndex].states - 1].completed;
                 else

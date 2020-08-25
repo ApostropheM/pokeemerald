@@ -37,12 +37,12 @@ const struct SideQuestDescStrings gText_SideQuestDesc_30[] = {{.inProgress = gTe
 static const struct SideQuest sSideQuests[SIDE_QUEST_COUNT] =
 {
     side_quest(gText_SideQuestName_1,  gText_SideQuestDesc_1,  gText_SideQuestPOC_1,  gText_SideQuestMap_1, PICTYPE_NONE, 0),
-    side_quest(gText_SideQuestName_2,  gText_SideQuestDesc_2,  gText_SideQuestPOC_2,  gText_SideQuestMap_2, PICTYPE_OBJECT_EVENT, OBJ_EVENT_GFX_LUCY),
+    side_quest(gText_SideQuestName_2,  gText_SideQuestDesc_2,  gText_SideQuestPOC_2,  gText_SideQuestMap_2, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_3,  gText_SideQuestDesc_3,  gText_SideQuestPOC_3,  gText_SideQuestMap_3, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_4,  gText_SideQuestDesc_4,  gText_SideQuestPOC_4,  gText_SideQuestMap_4, PICTYPE_NONE, 0),
-    side_quest(gText_SideQuestName_5,  gText_SideQuestDesc_5,  gText_SideQuestPOC_5,  gText_SideQuestMap_5, PICTYPE_OBJECT_EVENT, OBJ_EVENT_GFX_HOOH),
+    side_quest(gText_SideQuestName_5,  gText_SideQuestDesc_5,  gText_SideQuestPOC_5,  gText_SideQuestMap_5, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_6,  gText_SideQuestDesc_6,  gText_SideQuestPOC_6,  gText_SideQuestMap_6, PICTYPE_NONE, 0),
-    side_quest(gText_SideQuestName_7,  gText_SideQuestDesc_7,  gText_SideQuestPOC_7,  gText_SideQuestMap_7, PICTYPE_OBJECT_EVENT, OBJ_EVENT_GFX_NINJA_BOY),
+    side_quest(gText_SideQuestName_7,  gText_SideQuestDesc_7,  gText_SideQuestPOC_7,  gText_SideQuestMap_7, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_8,  gText_SideQuestDesc_8,  gText_SideQuestPOC_8,  gText_SideQuestMap_8, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_9,  gText_SideQuestDesc_9,  gText_SideQuestPOC_9,  gText_SideQuestMap_9, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_10, gText_SideQuestDesc_10, gText_SideQuestPOC_10, gText_SideQuestMap_1, PICTYPE_NONE, 0),
@@ -50,7 +50,7 @@ static const struct SideQuest sSideQuests[SIDE_QUEST_COUNT] =
     side_quest(gText_SideQuestName_12, gText_SideQuestDesc_12, gText_SideQuestPOC_12, gText_SideQuestMap_1, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_13, gText_SideQuestDesc_13, gText_SideQuestPOC_13, gText_SideQuestMap_1, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_14, gText_SideQuestDesc_14, gText_SideQuestPOC_14, gText_SideQuestMap_1, PICTYPE_NONE, 0),
-    side_quest(gText_SideQuestName_15, gText_SideQuestDesc_15, gText_SideQuestPOC_15, gText_SideQuestMap_1, PICTYPE_PARTY_ICON, SPECIES_ARCEUS),
+    side_quest(gText_SideQuestName_15, gText_SideQuestDesc_15, gText_SideQuestPOC_15, gText_SideQuestMap_1, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_16, gText_SideQuestDesc_16, gText_SideQuestPOC_16, gText_SideQuestMap_1, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_17, gText_SideQuestDesc_17, gText_SideQuestPOC_17, gText_SideQuestMap_1, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_18, gText_SideQuestDesc_18, gText_SideQuestPOC_18, gText_SideQuestMap_1, PICTYPE_NONE, 0),
@@ -66,46 +66,4 @@ static const struct SideQuest sSideQuests[SIDE_QUEST_COUNT] =
     side_quest(gText_SideQuestName_28, gText_SideQuestDesc_28, gText_SideQuestPOC_28, gText_SideQuestMap_2, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_29, gText_SideQuestDesc_29, gText_SideQuestPOC_29, gText_SideQuestMap_2, PICTYPE_NONE, 0),
     side_quest(gText_SideQuestName_30, gText_SideQuestDesc_30, gText_SideQuestPOC_30, gText_SideQuestMap_3, PICTYPE_NONE, 0),
-};
-
-static const u16 sSideQuestDifficultyItemIds[] = 
-{
-	ITEM_POKE_BALL,
-	ITEM_GREAT_BALL,
-	ITEM_ULTRA_BALL,
-	ITEM_MASTER_BALL,
-};
-
-static const u8 sSideQuestDifficulties[SIDE_QUEST_COUNT] = 
-{
-    [SIDE_QUEST_1] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_2] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_3] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_4] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_5] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_6] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_7] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_8] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_9] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_10] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_11] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_12] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_13] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_14] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_15] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_16] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_17] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_18] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_19] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_20] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_21] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_22] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_23] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_24] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_25] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_26] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_27] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_28] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_29] = QUEST_DIFFICULTY_EASY,
-    [SIDE_QUEST_30] = QUEST_DIFFICULTY_EASY,
 };

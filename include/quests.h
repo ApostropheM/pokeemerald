@@ -28,14 +28,6 @@ struct SideQuest
 
 extern const struct SideQuest gSideQuests[SIDE_QUEST_COUNT];
 
-enum 
-{
-	QUEST_DIFFICULTY_EASY,
-	QUEST_DIFFICULTY_MEDIUM,
-	QUEST_DIFFICULTY_HARD,
-	QUEST_DIFFICULTY_EXTREME,
-};
-
 enum QuestCases
 {
     VAR_GET_UNLOCKED,      // check if quest is unlocked
