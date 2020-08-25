@@ -19,6 +19,8 @@ struct SideQuest
 	/*0x08*/ const u8* poc;
 	/*0x0C*/ const u8* map;
 	/*0x10*/ const u8 states;
+			 const u8 picType;
+			 const u32 picId;
 	///*0x10*/ const u8* hint;
 	// /*0x14*/ const u8* reward;
 }; /* size = 0x18 */
@@ -40,6 +42,14 @@ enum QuestCases
     VAR_SET_UNLOCKED,      // mark unlocked quest
     VAR_GET_COMPLETED,     // check if quest is completed
     VAR_SET_COMPLETED,     // mark completed quest
+};
+
+enum QuestPicType
+{
+	PICTYPE_OBJECT_EVENT,
+	PICTYPE_PARTY_ICON,
+	PICTYPE_ITEM_ICON,
+	PICTYPE_NONE,
 };
 
 // functions

@@ -3,6 +3,7 @@
 #include "bg.h"
 #include "data.h"
 #include "decompress.h" 
+#include "event_object_movement.h"
 #include "gpu_regs.h"
 #include "graphics.h"
 #include "item.h"
@@ -17,6 +18,7 @@
 #include "menu_helpers.h"
 #include "palette.h"
 #include "party_menu.h"
+#include "pokemon_icon.h"
 #include "scanline_effect.h"
 #include "sound.h"
 #include "string_util.h"
@@ -31,6 +33,7 @@
 #include "constants/field_weather.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
+#include "constants/event_objects.h"
 #include "data/quests.h"
 
 #define tCount          data[2]
@@ -80,6 +83,8 @@ EWRAM_DATA static struct QuestMenuStaticResources sListMenuState = {0};
 EWRAM_DATA static u8 sSubmenuWindowIds[3] = {0};
 EWRAM_DATA static u8 sItemMenuIconSpriteIds[12] = {0};        // from pokefirered src/item_menu_icons.c
 EWRAM_DATA static u8 currentState = 0;
+EWRAM_DATA static u8 sCurrentPicType = PICTYPE_NONE;
+EWRAM_DATA static u8 sSpriteId = 0xFF;
 
 // This File's Functions
 static void DebugQuestMenu(void);
@@ -121,7 +126,8 @@ static u8 QuestMenu_GetOrCreateSubwindow(u8 idx);
 static void QuestMenu_DestroySubwindow(u8 idx);
 static void QuestMenu_SetInitializedFlag(u8 a0);
 // static bool8 IsActiveQuest(u8 questId);
-
+static void QuestMenu_CreateSideQuestPic(s32 itemIndex);
+static void QuestMenu_DestroySideQuestPic();
 // Data
 // graphics
 static const u32 sQuestMenuTiles[] = INCBIN_U32("graphics/quest_menu/menu.4bpp.lz");
@@ -737,7 +743,7 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
 
     if (sStateDataPtr->moveModeOrigPos == 0xFF)
     {
-        DestroyItemMenuIcon(sStateDataPtr->itemMenuIconSlot ^ 1);
+        QuestMenu_DestroySideQuestPic();
         if (itemIndex != LIST_CANCEL)
         {
             if (GetSetQuestFlag(itemIndex, VAR_GET_UNLOCKED))
@@ -755,14 +761,13 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
             //     desc = sText_QuestMenu_Unk;
             // }
             
-            CreateItemMenuIcon(itemId, sStateDataPtr->itemMenuIconSlot);
         }
         else
         {
-            CreateItemMenuIcon(ITEM_NONE, sStateDataPtr->itemMenuIconSlot);
             desc = sText_QuestMenu_Exit;
         }
         
+        QuestMenu_CreateSideQuestPic(itemIndex);
         sStateDataPtr->itemMenuIconSlot ^= 1;
         FillWindowPixelBuffer(1, 0);
         QuestMenu_AddTextPrinterParameterized(1, 2, desc, 0, 3, 2, 0, 0, 3);
@@ -1423,6 +1428,63 @@ void SetQuestMenuActive(void)
 void CopyQuestName(u8 *dst, u8 questId)
 {
     StringCopy(dst, sSideQuests[questId].name);
+}
+
+void QuestMenu_CreateSideQuestPic(s32 itemIndex)
+{
+    const struct ObjectEventGraphicsInfo* graphicsInfo;
+    u8 y;
+
+    if (itemIndex == LIST_CANCEL)
+    {
+        sCurrentPicType = PICTYPE_ITEM_ICON;
+        CreateItemMenuIcon(ITEM_NONE, sStateDataPtr->itemMenuIconSlot);
+        return;
+    }
+
+    switch (sSideQuests[itemIndex].picType)
+    {
+    case PICTYPE_ITEM_ICON:
+        sCurrentPicType = PICTYPE_ITEM_ICON;
+        CreateItemMenuIcon(sSideQuests[itemIndex].picId, sStateDataPtr->itemMenuIconSlot);
+        break;
+    case PICTYPE_OBJECT_EVENT:
+        sCurrentPicType = PICTYPE_OBJECT_EVENT;
+        graphicsInfo = GetObjectEventGraphicsInfo(sSideQuests[itemIndex].picId);
+        if (graphicsInfo->height == 32)
+            y = 132;
+        else
+            y = 140;
+        sSpriteId = AddPseudoObjectEvent(sSideQuests[itemIndex].picId, SpriteCallbackDummy, 21, y, 0);
+        gSprites[sSpriteId].oam.priority = 0;
+        break;
+    case PICTYPE_PARTY_ICON:
+        sCurrentPicType = PICTYPE_PARTY_ICON;
+        LoadMonIconPalette(sSideQuests[itemIndex].picId);
+        sSpriteId = CreateMonIcon(sSideQuests[itemIndex].picId, SpriteCallbackDummy, 21, 135, 0, 0, FALSE);
+        break;
+    case PICTYPE_NONE:
+        sCurrentPicType = PICTYPE_NONE;
+        break;
+    }
+}
+
+void QuestMenu_DestroySideQuestPic()
+{
+    switch (sCurrentPicType)
+    {
+    case PICTYPE_ITEM_ICON:
+        DestroyItemMenuIcon(sStateDataPtr->itemMenuIconSlot ^ 1);
+        break;
+    case PICTYPE_OBJECT_EVENT:
+        DestroySprite(&gSprites[sSpriteId]);
+        break;    
+    case PICTYPE_PARTY_ICON:
+        DestroySprite(&gSprites[sSpriteId]);
+        break;
+    case PICTYPE_NONE:
+        break;
+    }
 }
 
 #undef tBldYBak
