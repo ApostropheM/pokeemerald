@@ -708,7 +708,7 @@ void CreateItemMenuIcon(u16 itemId, u8 idx)
         if (spriteId != MAX_SPRITES)
         {
             ptr[idx] = spriteId;
-            gSprites[spriteId].pos2.x = 24;
+            gSprites[spriteId].pos2.x = 25;
             gSprites[spriteId].pos2.y = 140;
         }
     }
