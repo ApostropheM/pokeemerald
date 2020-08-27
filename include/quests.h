@@ -38,10 +38,10 @@ enum QuestCases
 
 enum QuestPicType
 {
+	PICTYPE_NONE,
 	PICTYPE_OBJECT_EVENT,
 	PICTYPE_PARTY_ICON,
 	PICTYPE_ITEM_ICON,
-	PICTYPE_NONE,
 };
 
 // functions

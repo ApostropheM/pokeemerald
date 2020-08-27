@@ -128,6 +128,8 @@ static void QuestMenu_SetInitializedFlag(u8 a0);
 // static bool8 IsActiveQuest(u8 questId);
 static void QuestMenu_CreateSideQuestPic(s32 itemIndex);
 static void QuestMenu_DestroySideQuestPic();
+static void Task_ChangeSprite(u8 taskId);
+
 // Data
 // graphics
 static const u32 sQuestMenuTiles[] = INCBIN_U32("graphics/quest_menu/menu.4bpp.lz");
@@ -743,7 +745,10 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
 
     if (sStateDataPtr->moveModeOrigPos == 0xFF)
     {
-        QuestMenu_DestroySideQuestPic();
+        u8 taskId = CreateTask(Task_ChangeSprite, 0);
+        gTasks[taskId].data[0] = 0;
+        gTasks[taskId].data[1] = itemIndex;
+
         if (itemIndex != LIST_CANCEL)
         {
             if (GetSetQuestFlag(itemIndex, VAR_GET_UNLOCKED))
@@ -767,11 +772,30 @@ static void QuestMenu_MoveCursorFunc(s32 itemIndex, bool8 onInit, struct ListMen
             desc = sText_QuestMenu_Exit;
         }
         
-        QuestMenu_CreateSideQuestPic(itemIndex);
+        // QuestMenu_CreateSideQuestPic(itemIndex);
         sStateDataPtr->itemMenuIconSlot ^= 1;
         FillWindowPixelBuffer(1, 0);
         QuestMenu_AddTextPrinterParameterized(1, 2, desc, 0, 3, 2, 0, 0, 3);
     }
+}
+
+static void Task_ChangeSprite(u8 taskId)
+{
+    s16 *data = gTasks[taskId].data;
+
+    switch (data[0])
+    {
+    case 0:
+        QuestMenu_DestroySideQuestPic();
+        break;
+    case 1:
+        QuestMenu_CreateSideQuestPic(data[1]);
+        break;
+    default:
+        DestroyTask(taskId);
+        return;
+    }
+    data[0]++;
 }
 
 static void QuestMenu_ItemPrintFunc(u8 windowId, s32 itemId, u8 y)
@@ -1477,10 +1501,10 @@ void QuestMenu_DestroySideQuestPic()
         DestroyItemMenuIcon(sStateDataPtr->itemMenuIconSlot ^ 1);
         break;
     case PICTYPE_OBJECT_EVENT:
-        DestroySprite(&gSprites[sSpriteId]);
+        DestroySpriteAndFreeResources(&gSprites[sSpriteId]);
         break;    
     case PICTYPE_PARTY_ICON:
-        DestroySprite(&gSprites[sSpriteId]);
+        DestroySpriteAndFreeResources(&gSprites[sSpriteId]);
         break;
     case PICTYPE_NONE:
         break;
