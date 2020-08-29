@@ -53,7 +53,7 @@
 #define tBldYBak        data[8]
 
 // Defines
-// #define NO_ACTIVE_QUEST -1
+#define TAG_ARROW       0x3333
 
 struct QuestMenuResources
 {
@@ -85,6 +85,8 @@ EWRAM_DATA static u8 sItemMenuIconSpriteIds[12] = {0};        // from pokefirere
 EWRAM_DATA static u8 currentState = 0;
 EWRAM_DATA static u8 sCurrentPicType = PICTYPE_NONE;
 EWRAM_DATA static u8 sSpriteId = 0xFF;
+EWRAM_DATA static u8 sLeftArrowId = 0xFF;
+EWRAM_DATA static u8 sRightArrowId = 0xFF;
 
 // This File's Functions
 static void DebugQuestMenu(void);
@@ -129,6 +131,7 @@ static void QuestMenu_SetInitializedFlag(u8 a0);
 static void QuestMenu_CreateSideQuestPic(s32 itemIndex);
 static void QuestMenu_DestroySideQuestPic();
 static void Task_ChangeSprite(u8 taskId);
+static void QuestMenu_PlaceArrows(bool8 leftArrow, bool8 rightArrow);
 
 // Data
 // graphics
@@ -136,6 +139,8 @@ static const u32 sQuestMenuTiles[] = INCBIN_U32("graphics/quest_menu/menu.4bpp.l
 static const u32 sQuestMenuBgPals[] = INCBIN_U32("graphics/quest_menu/menu_pal.gbapal.lz");
 static const u32 sQuestMenuTilemap[] = INCBIN_U32("graphics/quest_menu/tilemap.bin.lz");
 static const u16 sMainWindowPal[] = INCBIN_U16("graphics/quest_menu/main_window.gbapal");
+static const u32 sQuestMenuArrowGfx[] = INCBIN_U32("graphics/quest_menu/arrow.4bpp.lz");
+static const u16 sQuestMenuArrowPal[] = INCBIN_U16("graphics/quest_menu/arrow.gbapal");
 
 // text window from firered
 static const u16 sFR_StdFrame0[] = INCBIN_U16("graphics/text_window/fr_std0.4bpp");
@@ -295,6 +300,16 @@ static const struct WindowTemplate sQuestMenuSubWindowTemplates[] =
         .paletteNum = 12,
         .baseBlock = 0x009b
     }
+};
+
+static const union AnimCmd sSpriteAnim_ScrollArrowFlip[] =
+{
+    ANIMCMD_FRAME(0, 10, .hFlip = TRUE),
+    ANIMCMD_JUMP(0),
+};
+static const union AnimCmd *const sSpriteAnimTable_ScrollArrowFlip[] =
+{
+    sSpriteAnim_ScrollArrowFlip
 };
 
 // Functions -> ported from pokefirered
@@ -1006,6 +1021,9 @@ static void QuestMenu_InitItems(void)
 {
     sStateDataPtr->nItems = SIDE_QUEST_COUNT;
     sStateDataPtr->maxShowed = sStateDataPtr->nItems + 1 <= 6 ? sStateDataPtr->nItems + 1 : 6;
+    // sSpriteId = 0xFF;
+    sLeftArrowId = 0xFF;
+    sRightArrowId = 0xFF;
     //DebugQuestMenu();
 }
 
@@ -1062,13 +1080,19 @@ static void Task_QuestMenuMain(u8 taskId)
         }
         */
         u16 questId;
+        bool8 leftArrow, rightArrow;
         ListMenuGetScrollAndRow(data[0], &scroll, &row);
         questId = sListMenuItems[scroll + row].id;
+        
+        leftArrow = currentState > 1 && currentState <= sSideQuests[questId].states + 1 && sListMenuItems[scroll + row].id != LIST_CANCEL;
+        rightArrow = currentState < gSaveBlock2Ptr->questStates[questId] && currentState < sSideQuests[questId].states && sListMenuItems[scroll + row].id != LIST_CANCEL;
+        QuestMenu_PlaceArrows(leftArrow, rightArrow);
+
         if (gMain.newKeys & DPAD_LEFT && sListMenuItems[scroll + row].id != LIST_CANCEL)
         {
             if (currentState <= 1)
             {
-                PlaySE(SE_HAZURE);
+                PlaySE(SE_FAILURE);
                 return;
             }
 
@@ -1086,7 +1110,7 @@ static void Task_QuestMenuMain(u8 taskId)
             const u8 *desc;
             if (currentState >= gSaveBlock2Ptr->questStates[questId] || currentState >= sSideQuests[questId].states)
             {
-                PlaySE(SE_HAZURE);
+                PlaySE(SE_FAILURE);
                 return;
             }
             currentState++;
@@ -1146,6 +1170,7 @@ static void Task_QuestMenuSubmenuInit(u8 taskId)
     s16 * data = gTasks[taskId].data;
     u8 windowId;
 
+    QuestMenu_PlaceArrows(FALSE, FALSE);
     QuestMenu_SetBorderStyleOnWindow(4);    //for sub menu list items
     windowId = QuestMenu_GetOrCreateSubwindow(0);
     
@@ -1508,6 +1533,55 @@ void QuestMenu_DestroySideQuestPic()
         break;
     case PICTYPE_NONE:
         break;
+    }
+}
+
+static void QuestMenu_PlaceArrows(bool8 leftArrow, bool8 rightArrow)
+{
+    struct CompressedSpriteSheet sheet;
+    struct SpritePalette palSheet;
+    struct SpriteTemplate spriteTemp1;
+    struct OamData oam = {0};
+
+    if (!leftArrow && sLeftArrowId != 0xFF)
+    {
+        DestroySprite(&gSprites[sLeftArrowId]);
+        sLeftArrowId = 0xFF;
+    }
+    if (!rightArrow && sRightArrowId != 0xFF)
+    {
+        DestroySprite(&gSprites[sRightArrowId]);
+        sRightArrowId = 0xFF;
+    }
+
+    sheet.tag = TAG_ARROW;
+    sheet.data = sQuestMenuArrowGfx;
+    sheet.size = GetDecompressedDataSize(sQuestMenuArrowGfx);
+
+    palSheet.tag = TAG_ARROW;
+    palSheet.data = sQuestMenuArrowPal;
+
+    oam.size = SPRITE_SIZE(8x16);
+    oam.shape = SPRITE_SHAPE(8x16);
+    oam.priority = 0;
+    oam.affineMode = ST_OAM_AFFINE_OFF;
+
+    spriteTemp1 = gDummySpriteTemplate;
+    spriteTemp1.oam = &oam;
+    spriteTemp1.paletteTag = spriteTemp1.tileTag = TAG_ARROW;
+
+    if (leftArrow && sLeftArrowId == 0xFF)
+    {
+        LoadCompressedSpriteSheet(&sheet);
+        LoadSpritePalette(&palSheet);
+        sLeftArrowId = CreateSprite(&spriteTemp1, 40, 136, 0);
+    }
+    if (rightArrow && sRightArrowId == 0xFF)
+    {
+        spriteTemp1.anims = sSpriteAnimTable_ScrollArrowFlip;
+        LoadCompressedSpriteSheet(&sheet);
+        LoadSpritePalette(&palSheet);
+        sRightArrowId = CreateSprite(&spriteTemp1, 235, 136, 0);
     }
 }
 
