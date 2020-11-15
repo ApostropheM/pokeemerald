@@ -1,6 +1,8 @@
 #ifndef GUARD_DAYCARE_CONSTANTS_H
 #define GUARD_DAYCARE_CONSTANTS_H
 
+#include "constants/daycare_config.h"
+
 // Parent compatability scores
 #define PARENTS_INCOMPATIBLE       0
 #define PARENTS_LOW_COMPATIBILITY  20
