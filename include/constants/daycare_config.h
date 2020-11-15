@@ -18,6 +18,9 @@
 // TODO: Alolan and Galar Forms
 // TODO: Rotom, Vivillon, Furfrou, and Sinistea Forms
 
+// Note: There is no option to get Emerald style IV inheritance because
+// it is a bug and a really stupid bug, at that.
+
 // Inheritance Rules
 #define D_TM_INHERITANCE              GEN_3 
 /*  TODO: Since Gen 6, the father no longer passes down TMs to the baby. */

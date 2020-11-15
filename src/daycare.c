@@ -548,7 +548,7 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     {
         // Randomly pick an IV from the available list and stop from being chosen again.
         selectedIvs[i] = availableIVs[Random() % (NUM_STATS - i)];
-        RemoveIVIndexFromList(availableIVs, i);
+        RemoveIVIndexFromList(availableIVs, selectedIvs[i]);
     }
 
     // Determine which parent each of the selected IVs should inherit from.
