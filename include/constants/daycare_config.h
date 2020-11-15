@@ -44,7 +44,7 @@
 
 // Miscellanous
 #define D_EGG_HATCH_LEVEL      GEN_3 
-/*  TODO: In Gen 3, Eggs hatch at level 5. Since Gen 4, they hatch at level 1. */
+/*  In Gen 3, Eggs hatch at level 5. Since Gen 4, they hatch at level 1. */
 #define D_EGG_MOVE_REMINDER    GEN_3 
 /*  TODO: Since Gen 6, a Pokemon can remember the moves it hatched with at the Move Reminder. */
 #define D_MASUDA_METHOD_CHANCE GEN_3 
