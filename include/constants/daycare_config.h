@@ -23,7 +23,7 @@
 
 // Inheritance Rules
 #define D_TM_INHERITANCE              GEN_8
-/*  TODO: Since Gen 6, the father no longer passes down TMs to the baby. */
+/*  Since Gen 6, the father no longer passes down TMs to the baby. */
 #define D_MOTHER_EGG_MOVE_INHERITANCE GEN_8
 /*  TODO: Starting in Gen 6, the mother can also pass down egg moves. */
 #define D_FOREIGN_NATURE_INHERITANCE  GEN_8
@@ -36,11 +36,12 @@
     Poke Balls if bred with the same species (regardless of form), and will always pass down if bred with Ditto. 
     Nidoran and Volbeat/Illumise will always pass down the female, they are not the same species. 
     Master Ball and Cherish Ball will yield a Poke Ball. */
-#define D_ABILITY_INHERITANCE         GEN8
+#define D_ABILITY_INHERITANCE         GEN_8
 /*  TODO: In B2W2, a female Pokemon has an 80% chance of passing down their ability if bred with a male.
     Since Gen 6, the chance is 80% for normal ability and 60% for Hidden Ability, and anyone can pass
     down their abilities if bred with Ditto.
-    NOTE: BW's effect: 60% chance to pass down HA and random for normal ability has been omitted.*/
+    NOTE: BW's effect: 60% chance to pass down HA and random for normal ability has been omitted. 
+    If you want this, modify the constants in include/constants/daycare.h.*/
 
 // Miscellanous
 #define D_EGG_HATCH_LEVEL      GEN_8
