@@ -16,6 +16,15 @@
 #define DAYCARE_TWO_MONS    3
 
 #define INHERITED_IV_COUNT 3
+#define IV_BONUS           2
+#ifdef ITEM_DESTINY_KNOT
+    // needed because Destiny Knot was only introduced in Gen 4
+    #define IV_BONUS_ITEM ITEM_DESTINY_KNOT
+#else
+    // Guaranteed to not be a valid item
+    #define IV_BONUS_ITEM ITEMS_COUNT
+#endif
+
 #if D_EGG_HATCH_LEVEL >= GEN_4
     #define EGG_HATCH_LEVEL 1
 #else

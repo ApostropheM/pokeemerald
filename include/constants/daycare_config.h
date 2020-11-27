@@ -10,7 +10,7 @@
     #define GEN_8 5
 #endif
 
-// TODO: Implement Destiny Knot IV passing
+// Implemented Destiny Knot IV passing
 // TODO: Implement Power Items IV passing
 // TODO: Expand Incense Evolutions
 // TODO: Manaphy and Phione

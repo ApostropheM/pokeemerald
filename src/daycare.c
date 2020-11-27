@@ -22,6 +22,7 @@
 #include "constants/items.h"
 #include "constants/moves.h"
 #include "constants/region_map_sections.h"
+#include "malloc.h"
 
 // this file's functions
 static void ClearDaycareMonMail(struct DayCareMail *mail);
@@ -532,10 +533,22 @@ static void RemoveIVIndexFromList(u8 *ivs, u8 selectedIv)
 static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
 {
     u8 i;
-    u8 selectedIvs[INHERITED_IV_COUNT];
+    u8 inheritedIvs;
+    u8 *selectedIvs;
     u8 availableIVs[NUM_STATS];
-    u8 whichParents[INHERITED_IV_COUNT];
+    u8 *whichParents;
     u8 iv;
+    u16 motherItem, fatherItem;
+
+    motherItem = GetBoxMonData(&daycare->mons[0].mon, MON_DATA_HELD_ITEM);
+    fatherItem = GetBoxMonData(&daycare->mons[1].mon, MON_DATA_HELD_ITEM);
+    
+    inheritedIvs = INHERITED_IV_COUNT;
+    if (motherItem == IV_BONUS_ITEM || fatherItem == IV_BONUS_ITEM)
+        inheritedIvs += IV_BONUS;
+    
+    selectedIvs = malloc(inheritedIvs);
+    whichParents = malloc(inheritedIvs);
 
     // Initialize a list of IV indices.
     for (i = 0; i < NUM_STATS; i++)
@@ -543,22 +556,23 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
         availableIVs[i] = i;
     }
 
-    // Select the 3 IVs that will be inherited.
-    for (i = 0; i < INHERITED_IV_COUNT; i++)
+    // Select the IVs that will be inherited.
+    for (i = 0; i < inheritedIvs; i++)
     {
         // Randomly pick an IV from the available list and stop from being chosen again.
-        selectedIvs[i] = availableIVs[Random() % (NUM_STATS - i)];
-        RemoveIVIndexFromList(availableIVs, selectedIvs[i]);
+        u8 index = Random() % (NUM_STATS - i);
+        selectedIvs[i] = availableIVs[index];
+        RemoveIVIndexFromList(availableIVs, index);
     }
 
     // Determine which parent each of the selected IVs should inherit from.
-    for (i = 0; i < INHERITED_IV_COUNT; i++)
+    for (i = 0; i < inheritedIvs; i++)
     {
         whichParents[i] = Random() % DAYCARE_MON_COUNT;
     }
 
     // Set each of inherited IVs on the egg mon.
-    for (i = 0; i < INHERITED_IV_COUNT; i++)
+    for (i = 0; i < inheritedIvs; i++)
     {
         switch (selectedIvs[i])
         {
@@ -588,6 +602,9 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
                 break;
         }
     }
+    
+    free(selectedIvs);
+    free(whichParents);
 }
 
 // Counts the number of egg moves a pokemon learns and stores the moves in
