@@ -24,6 +24,21 @@
 #include "constants/region_map_sections.h"
 #include "malloc.h"
 
+// data
+static const struct ItemSpeciesAlteration sItemSpeciesAlterations[] = 
+{
+    {ITEM_LAX_INCENSE,  SPECIES_WYNAUT,    SPECIES_WOBBUFFET},
+    {ITEM_SEA_INCENSE,  SPECIES_AZURILL,   SPECIES_MARILL},
+#if defined(ITEM_EXPANSION) && defined(POKEMON_EXPANSION)
+    {ITEM_LUCK_INCENSE, SPECIES_HAPPINY,   SPECIES_CHANSEY},
+    {ITEM_ODD_INCENSE,  SPECIES_MIMEJR,    SPECIES_MR_MIME},
+    {ITEM_PURE_INCENSE, SPECIES_CHINGLING, SPECIES_CHIMECHO},
+    {ITEM_ROCK_INCENSE, SPECIES_BONSLY,    SPECIES_SUDOWOODO},
+    {ITEM_ROSE_INCENSE, SPECIES_BUDEW,     SPECIES_ROSELIA},
+    {ITEM_WAVE_INCENSE, SPECIES_MANTYKE,   SPECIES_MANTINE},
+#endif
+};
+
 // this file's functions
 static void ClearDaycareMonMail(struct DayCareMail *mail);
 static void SetInitialEggData(struct Pokemon *mon, u16 species, struct DayCare *daycare);
@@ -765,21 +780,19 @@ void RejectEggFromDayCare(void)
     RemoveEggFromDayCare(&gSaveBlock1Ptr->daycare);
 }
 
-static void AlterEggSpeciesWithIncenseItem(u16 *species, struct DayCare *daycare)
+static void AlterSpeciesWithItem(u16 *species, struct DayCare *daycare)
 {
     u16 motherItem, fatherItem;
-    if (*species == SPECIES_WYNAUT || *species == SPECIES_AZURILL)
+    u32 i;
+    motherItem = GetBoxMonData(&daycare->mons[0].mon, MON_DATA_HELD_ITEM);
+    fatherItem = GetBoxMonData(&daycare->mons[1].mon, MON_DATA_HELD_ITEM);
+    for (i = 0; i < ARRAY_COUNT(sItemSpeciesAlterations); i++) 
     {
-        motherItem = GetBoxMonData(&daycare->mons[0].mon, MON_DATA_HELD_ITEM);
-        fatherItem = GetBoxMonData(&daycare->mons[1].mon, MON_DATA_HELD_ITEM);
-        if (*species == SPECIES_WYNAUT && motherItem != ITEM_LAX_INCENSE && fatherItem != ITEM_LAX_INCENSE)
+        const struct ItemSpeciesAlteration *alteration = &sItemSpeciesAlterations[i];
+        if (*species == alteration->newSpecies)
         {
-            *species = SPECIES_WOBBUFFET;
-        }
-
-        if (*species == SPECIES_AZURILL && motherItem != ITEM_SEA_INCENSE && fatherItem != ITEM_SEA_INCENSE)
-        {
-            *species = SPECIES_MARILL;
+            if (motherItem != alteration->item && fatherItem != alteration->item)
+                *species = alteration->oldSpecies;
         }
     }
 }
@@ -846,7 +859,7 @@ static void _GiveEggFromDaycare(struct DayCare *daycare)
     bool8 isEgg;
 
     species = DetermineEggSpeciesAndParentSlots(daycare, parentSlots);
-    AlterEggSpeciesWithIncenseItem(&species, daycare);
+    AlterSpeciesWithItem(&species, daycare);
     SetInitialEggData(&egg, species, daycare);
     InheritIVs(&egg, daycare);
     BuildEggMoveset(&egg, &daycare->mons[parentSlots[1]].mon, &daycare->mons[parentSlots[0]].mon);
