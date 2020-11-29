@@ -26,8 +26,6 @@
 /*  Since Gen 6, the father no longer passes down TMs to the baby. */
 #define D_MOTHER_EGG_MOVE_INHERITANCE GEN_8
 /*  Starting in Gen 6, the mother can also pass down egg moves. */
-#define D_FOREIGN_NATURE_INHERITANCE  GEN_8
-/*  TODO: In Gen 4, passing natures fails if the parents are of different languages. */
 #define D_NATURE_INHERITANCE_CHANCE   GEN_8
 /*  TODO: In Gen 3, Everstone grants Ditto and mothers a 50% chance to pass on Nature. 
     Since Gen 4, anyone can pass on nature. Since Gen 5, the chance is 100%. */
