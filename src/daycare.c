@@ -548,7 +548,7 @@ static void RemoveIVIndexFromList(u8 *ivs, u8 selectedIv)
 static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
 {
     u8 i;
-    u8 inheritedIvs;
+    u8 inheritedIvCount;
     u8 *selectedIvs;
     u8 availableIVs[NUM_STATS];
     u8 *whichParents;
@@ -558,12 +558,12 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     motherItem = GetBoxMonData(&daycare->mons[0].mon, MON_DATA_HELD_ITEM);
     fatherItem = GetBoxMonData(&daycare->mons[1].mon, MON_DATA_HELD_ITEM);
     
-    inheritedIvs = INHERITED_IV_COUNT;
+    inheritedIvCount = INHERITED_IV_COUNT;
     if (motherItem == IV_BONUS_ITEM || fatherItem == IV_BONUS_ITEM)
-        inheritedIvs += IV_BONUS;
+        inheritedIvCount += IV_BONUS;
     
-    selectedIvs = malloc(inheritedIvs);
-    whichParents = malloc(inheritedIvs);
+    selectedIvs = malloc(inheritedIvCount);
+    whichParents = malloc(inheritedIvCount);
 
     // Initialize a list of IV indices.
     for (i = 0; i < NUM_STATS; i++)
@@ -572,7 +572,7 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     }
 
     // Select the IVs that will be inherited.
-    for (i = 0; i < inheritedIvs; i++)
+    for (i = 0; i < inheritedIvCount; i++)
     {
         // Randomly pick an IV from the available list and stop from being chosen again.
         u8 index = Random() % (NUM_STATS - i);
@@ -581,13 +581,13 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     }
 
     // Determine which parent each of the selected IVs should inherit from.
-    for (i = 0; i < inheritedIvs; i++)
+    for (i = 0; i < inheritedIvCount; i++)
     {
         whichParents[i] = Random() % DAYCARE_MON_COUNT;
     }
 
     // Set each of inherited IVs on the egg mon.
-    for (i = 0; i < inheritedIvs; i++)
+    for (i = 0; i < inheritedIvCount; i++)
     {
         switch (selectedIvs[i])
         {
