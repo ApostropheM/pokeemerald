@@ -11,7 +11,7 @@
 #endif
 
 // Implemented Destiny Knot IV passing
-// TODO: Implement Power Items IV passing
+// Implemented Power Items IV passing
 // Expand Incense Evolutions and convert it to easy to edit table
 // TODO: Manaphy and Phione
 // TODO: Make it easy to add more item = mon + move combos like Light Ball = Volt Tackle Pichu

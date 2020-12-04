@@ -23,6 +23,7 @@
 #include "constants/moves.h"
 #include "constants/region_map_sections.h"
 #include "malloc.h"
+#include "constants/hold_effects.h"
 
 // data
 static const struct ItemSpeciesAlteration sItemSpeciesAlterations[] = 
@@ -547,7 +548,7 @@ static void RemoveIVIndexFromList(u8 *ivs, u8 selectedIv)
 
 static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
 {
-    u8 i;
+    u8 i, start;
     u8 inheritedIvCount;
     u8 *selectedIvs;
     u8 availableIVs[NUM_STATS];
@@ -571,8 +572,35 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
         availableIVs[i] = i;
     }
 
+    start = 0;
+    // defined in item expansion
+    #ifdef HOLD_EFFECT_POWER_ITEM
+    if (ItemId_GetHoldEffect(motherItem) == HOLD_EFFECT_POWER_ITEM && 
+        ItemId_GetHoldEffect(fatherItem) == HOLD_EFFECT_POWER_ITEM)
+    {
+        whichParents[0] = Random() % DAYCARE_MON_COUNT;
+        selectedIvs[0] = ItemId_GetSecondaryId(
+            GetBoxMonData(&daycare->mons[whichParents[0]].mon, MON_DATA_HELD_ITEM));
+        RemoveIVIndexFromList(availableIVs, selectedIvs[0]);
+        start++;
+    }
+    else if (ItemId_GetHoldEffect(motherItem) == HOLD_EFFECT_POWER_ITEM) 
+    {
+        whichParents[0] = 0;
+        selectedIvs[0] = ItemId_GetSecondaryId(motherItem);
+        RemoveIVIndexFromList(availableIVs, selectedIvs[0]);
+        start++;
+    }
+    else if (ItemId_GetHoldEffect(fatherItem) == HOLD_EFFECT_POWER_ITEM) 
+    {
+        whichParents[0] = 1;
+        selectedIvs[0] = ItemId_GetSecondaryId(fatherItem);
+        RemoveIVIndexFromList(availableIVs, selectedIvs[0]);
+        start++;
+    }
+    #endif
     // Select the IVs that will be inherited.
-    for (i = 0; i < inheritedIvCount; i++)
+    for (i = start; i < inheritedIvCount; i++)
     {
         // Randomly pick an IV from the available list and stop from being chosen again.
         u8 index = Random() % (NUM_STATS - i);
@@ -581,7 +609,7 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     }
 
     // Determine which parent each of the selected IVs should inherit from.
-    for (i = 0; i < inheritedIvCount; i++)
+    for (i = start; i < inheritedIvCount; i++)
     {
         whichParents[i] = Random() % DAYCARE_MON_COUNT;
     }
