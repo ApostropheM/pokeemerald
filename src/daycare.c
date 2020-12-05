@@ -560,9 +560,12 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     fatherItem = GetBoxMonData(&daycare->mons[1].mon, MON_DATA_HELD_ITEM);
     
     inheritedIvCount = INHERITED_IV_COUNT;
-    if (motherItem == IV_BONUS_ITEM || fatherItem == IV_BONUS_ITEM)
+    // defined in item expansion
+    #ifdef ITEM_DESTINY_KNOT
+    if (motherItem == ITEM_DESTINY_KNOT || fatherItem == ITEM_DESTINY_KNOT)
         inheritedIvCount += IV_BONUS;
-    
+    #endif
+
     selectedIvs = malloc(inheritedIvCount);
     whichParents = malloc(inheritedIvCount);
 
