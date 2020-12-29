@@ -24,6 +24,7 @@
 #include "constants/region_map_sections.h"
 #include "malloc.h"
 #include "constants/hold_effects.h"
+#include "item.h"
 
 // data
 static const struct ItemSpeciesAlteration sItemSpeciesAlterations[] = 
